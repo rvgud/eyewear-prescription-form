@@ -1,0 +1,19 @@
+/**
+ * All of the CSS for your admin-specific functionality should be
+ * included in this file.
+ */
+
+.image_change {
+    text-align: center !important;
+    background: #2196f370 !important;
+}
+
+.image_add {
+    text-align: center !important;
+    background: #2d7daf !important;
+}
+
+.disableInput {
+    background: #ad0e0e87 !important;
+    cursor: help !important;
+}

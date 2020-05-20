@@ -1,0 +1,181 @@
+/**
+ * All of the CSS for your public-facing functionality should be
+ * included in this file.
+ */
+
+.lens-type {
+    cursor: pointer !important;
+}
+
+.lens-type-selected {
+    background-color: #56ad5c !important;
+}
+
+.card-title {
+    font-weight: 600 !important;
+    font-size: x-small !important;
+}
+
+.card-header {
+    background-color: rgb(29, 57, 160) !important;
+}
+
+.btn-link {
+    color: #fafcff !important;
+}
+
+.price_box {
+    color: black;
+    text-align: center;
+    border-top: #000;
+    border-top-width: thick;
+    border-top-style: dashed;
+}
+
+.modal-content {
+    overflow-y: visible !important;
+}
+
+.modal .modal-header:after {
+    border-top: 0px solid #0099a8 !important;
+}
+
+.radio {
+    padding-bottom: 4% !important;
+}
+
+.radio_span {
+    margin-left: 2% !important;
+}
+
+.full-width-input {
+    width: auto !important;
+}
+
+select.form-control:not([size]):not([multiple]) {
+    height: auto !important;
+}
+
+
+/**
+ * PD CSS
+ */
+
+#main-body {
+    position: relative;
+    max-width: 500px;
+    box-sizing: content-box !important;
+    padding: 0px !important;
+}
+
+.no-padding {
+    padding: 0px !important;
+}
+
+.header {
+    width: 500px;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+
+.steps {
+    margin-left: 2rem;
+}
+
+#pd_area {
+    color: rgb(13, 188, 241);
+    font-style: initial;
+    position: absolute;
+    top: 0%;
+    right: 1%;
+    max-width: 100px;
+}
+
+.stepRow {
+    border: 3px solid rgb(6, 196, 243);
+    border-radius: 1.5rem;
+    margin-top: 2rem;
+}
+
+#pd {
+    border-color: aqua;
+    margin-right: 0rem;
+    width: 100%;
+    background-color: #00192fd1 !important;
+    color: white !important;
+}
+
+.dot {
+    position: absolute;
+}
+
+div .btn {
+    padding-top: 0rem;
+    padding-right: 0rem;
+    padding-bottom: 0rem;
+    padding-left: 0rem;
+}
+
+#eyeDotLeft {
+    margin-top: 0rem;
+}
+
+@media (min-width: 900px) {
+    #profile-img-tag {
+        width: 500px !important;
+        height: 400px !important;
+    }
+}
+
+#eyeDotLeft {
+    color: red !important;
+    position: absolute !important;
+    top: 21.5%;
+    left: 42%;
+}
+
+#eyeDotRight {
+    color: red !important;
+    position: absolute !important;
+    top: 22.5%;
+    left: 56%;
+}
+
+.redEye {
+    color: red !important;
+    position: absolute !important;
+}
+
+.redLine {
+    left: 38%;
+    top: 34%;
+    width: 24%;
+    position: absolute !important;
+    height: 31px;
+}
+
+@media (max-width: 900px) {
+    #eyeDotLeft {
+        color: red !important;
+        position: absolute !important;
+        top: 29.5%;
+        left: 40%;
+    }
+    #eyeDotRight {
+        color: red !important;
+        position: absolute !important;
+        top: 29.5%;
+        left: 55%;
+    }
+    .redLine {
+        left: 38%;
+        top: 51%;
+        width: 24%;
+        position: absolute !important;
+        height: 31px;
+    }
+}
+
+.pd-radio {
+    width: 33% !important;
+}
