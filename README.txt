@@ -1,5 +1,5 @@
 === Eyewear prescription form ===
-Contributors: (this should be a list of wordpress.org userid's)
+Contributors: dugudlabs
 Donate link: https://www.dugudlabs.com/specfit/eyewear-prescription-form
 Tags: comments, spam
 Requires at least: 3.0.1
