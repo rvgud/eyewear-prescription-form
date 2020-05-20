@@ -1,7 +1,7 @@
 <?php 
 $words_epf_dugudlabs = array(
     "en_US" => array(
-        "Add Recipe" => "Add Recipe",
+        "Add Recipe" => "Add Prescription",
         "Save" => "Save",
         "EYEWEAR RECIPE DETAILS"=>"EYEWEAR RECIPE DETAILS",
         "Disclaimer" => "Disclaimer",

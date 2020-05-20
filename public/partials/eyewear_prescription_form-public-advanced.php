@@ -312,12 +312,7 @@ function show_price_span(side,property){
                                             </tr>
                                         </tbody>
                                     </table> 
-                                    <div class="radio">
-                                        <input class="full-width-input" onclick="show_priscription(this,'upload');" type="radio" name="prescription_type"  value="upload"><span class="radio_span"><?php echo $words_epf_dugudlabs_lng["Upload prescription"];?></span>
-                                    </div>
-                                    <div id="prescription_upload"  style="display: none;">
-                                        <input class="full-width-input" name="prescription_file" class="btn btn-secondary" type="file">
-                                    </div>
+                                    
                                 </div>
                             </div>
                         </div>
@@ -338,9 +333,6 @@ function show_price_span(side,property){
                                     </div>
                                     <div class="radio pd-radio">
                                             <input class="full-width-input" onclick="show_pd_box('single-pd-box');" type="radio" name="pd_type"  value="single"><span class="radio_span"><?php echo $words_epf_dugudlabs_lng["Single PD"];?></span>
-                                    </div>
-                                    <div class="radio pd-radio">
-                                            <input class="full-width-input" onclick="show_pd_box('pd-calculator');" type="radio" name="pd_type"  value="calculate"><span class="radio_span"><?php echo $words_epf_dugudlabs_lng["Measure PD"];?></span>
                                     </div>
                                 </div>
                                 <div id="dual-pd-box" style="display:none;">
@@ -407,49 +399,7 @@ function show_price_span(side,property){
                                             ?>
                                     </div>
                                 </div>
-                                <div id="pd-calculator" style="display: none;" class="container no-padding">
-                                    <div class="row">
-                                        <div id="main-body" class="col-lg-5">
-                                            <img class="img-fluid" src="<?php echo plugin_dir_url( __FILE__ ).'/images/'.'pd-face.png';?>" id="profile-img-tag" width="500px">
-                                            <div class="btn  eyeDot" id="eyeDotLeft">
-                                                <i class="fas fa-eye redEye"></i>
-                                            </div>
-                                            <div class="btn  eyeDot" id="eyeDotRight">
-                                                <i class="fas fa-eye redEye"></i>
-                                            </div>
-                                    
-                                            <div id="dimension-line" class="redLine"> <img src="<?php echo plugin_dir_url( __FILE__ ).'/images/'.'redLine.png';?>" width="100%" style="max-height:60px;"></div>
-                                            <span id="pd_area" >MM: <input type="text" name="MEASURED-PD" id="pd" placeholder="51" >
-                                            </span>
-
-                                            <div class="header">
-                                                <input type="file" name="file" id="profile-img">
-                                            </div>
-                                            <!-- <div id="left"><div id="leftheader">right</div></div> -->
-                                        </div>
-                                        <div class="col-lg-5 steps">
-                                            <div class="row stepRow" id="stepRow1">
-                                                <div class="col">
-                                                    <a href=""><img src="<?php echo plugin_dir_url( __FILE__ ).'/images/'.'step1.jpg';?>" width="200 px" height="150 px"></a>
-                                                </div>
-                                                <div class="col">
-                                                    <span>Grab a regular card with a magnetic stripe on the back. Student IDs, credit cards and gift cards work well as measurement tools.</span>
-                                                </div>
-                                            </div>
-                                            <div class="row stepRow" id="stepRow2">
-                                                <div class="col"><img src="<?php echo plugin_dir_url( __FILE__ ).'/images/'.'pd-face-bf.png';?>" width="200 px" height="150 px"></div>
-                                                <div class="col"><span>Place the card under your nose and try to keep its distance from the camera the same as your eyes. Snap the picture and drop it on the marked area..</span>
-                                                </div>
-                                            </div>
-
-                                            <div class="row stepRow" id="stepRow3">
-                                                <div class="col" ><img src="<?php echo plugin_dir_url( __FILE__ ).'/images/'.'step-3.png';?>" width="200 px" height="150 px"></div>
-                                                <div class="col"><span>Now begin by marking your left and right eyes with draggable eye icons provided here. The marking line will resize and center after which you can mark the left and right side of the Credit Card. Your PD will be shown at the top right!.</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                
                             </div>
                         </div>
                     </div>
@@ -569,7 +519,6 @@ function show_price_span(side,property){
             </div>
             </div>
             <div class="modal-footer">
-                <span style="position: fixed;left: 5%;">Powered By:- <a href="https://dugudlabs.com/specfit/eyewear_priscription_form">Eyewear Priscription Form Plugin</a></span>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal"><?php echo $words_epf_dugudlabs_lng["Save"];?></button>
             </div>
         </div>

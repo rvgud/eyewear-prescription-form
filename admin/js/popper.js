@@ -1,5 +1,5 @@
 /*
- Copyright (C) Federico Zivolo 2019
+ Copyright (C) Federico Zivolo 2018
  Distributed under the MIT License (license terms are at http://opensource.org/licenses/MIT).
  */
 (function(e, t) { 'object' == typeof exports && 'undefined' != typeof module ? module.exports = t() : 'function' == typeof define && define.amd ? define(t) : e.Popper = t() })(this, function() {
@@ -7,12 +7,7 @@
 
     function e(e) { return e && '[object Function]' === {}.toString.call(e) }
 
-    function t(e, t) {
-        if (1 !== e.nodeType) return [];
-        var o = e.ownerDocument.defaultView,
-            n = o.getComputedStyle(e, null);
-        return t ? n[t] : n
-    }
+    function t(e, t) { if (1 !== e.nodeType) return []; var o = getComputedStyle(e, null); return t ? o[t] : o }
 
     function o(e) { return 'HTML' === e.nodeName ? e : e.parentNode || e.host }
 
@@ -32,11 +27,9 @@
         return /(auto|scroll|overlay)/.test(r + s + p) ? e : n(o(e))
     }
 
-    function i(e) { return e && e.referenceNode ? e.referenceNode : e }
-
     function r(e) { return 11 === e ? re : 10 === e ? pe : re || pe }
 
-    function p(e) { if (!e) return document.documentElement; for (var o = r(10) ? document.body : null, n = e.offsetParent || null; n === o && e.nextElementSibling;) n = (e = e.nextElementSibling).offsetParent; var i = n && n.nodeName; return i && 'BODY' !== i && 'HTML' !== i ? -1 !== ['TH', 'TD', 'TABLE'].indexOf(n.nodeName) && 'static' === t(n, 'position') ? p(n) : n : e ? e.ownerDocument.documentElement : document.documentElement }
+    function p(e) { if (!e) return document.documentElement; for (var o = r(10) ? document.body : null, n = e.offsetParent; n === o && e.nextElementSibling;) n = (e = e.nextElementSibling).offsetParent; var i = n && n.nodeName; return i && 'BODY' !== i && 'HTML' !== i ? -1 !== ['TD', 'TABLE'].indexOf(n.nodeName) && 'static' === t(n, 'position') ? p(n) : n : e ? e.ownerDocument.documentElement : document.documentElement }
 
     function s(e) { var t = e.nodeName; return 'BODY' !== t && ('HTML' === t || p(e.firstElementChild) === e) }
 
@@ -81,13 +74,13 @@
         return parseFloat(e['border' + o + 'Width'], 10) + parseFloat(e['border' + n + 'Width'], 10)
     }
 
-    function h(e, t, o, n) { return ee(t['offset' + e], t['scroll' + e], o['client' + e], o['offset' + e], o['scroll' + e], r(10) ? parseInt(o['offset' + e]) + parseInt(n['margin' + ('Height' === e ? 'Top' : 'Left')]) + parseInt(n['margin' + ('Height' === e ? 'Bottom' : 'Right')]) : 0) }
+    function h(e, t, o, n) { return $(t['offset' + e], t['scroll' + e], o['client' + e], o['offset' + e], o['scroll' + e], r(10) ? o['offset' + e] + n['margin' + ('Height' === e ? 'Top' : 'Left')] + n['margin' + ('Height' === e ? 'Bottom' : 'Right')] : 0) }
 
-    function c(e) {
-        var t = e.body,
-            o = e.documentElement,
-            n = r(10) && getComputedStyle(o);
-        return { height: h('Height', t, o, n), width: h('Width', t, o, n) }
+    function c() {
+        var e = document.body,
+            t = document.documentElement,
+            o = r(10) && getComputedStyle(t);
+        return { height: h('Height', e, t, o), width: h('Width', e, t, o) }
     }
 
     function g(e) { return le({}, e, { right: e.left + e.width, bottom: e.top + e.height }) }
@@ -103,9 +96,9 @@
             } else o = e.getBoundingClientRect()
         } catch (t) {}
         var p = { left: o.left, top: o.top, width: o.right - o.left, height: o.bottom - o.top },
-            s = 'HTML' === e.nodeName ? c(e.ownerDocument) : {},
-            d = s.width || e.clientWidth || p.width,
-            a = s.height || e.clientHeight || p.height,
+            s = 'HTML' === e.nodeName ? c() : {},
+            d = s.width || e.clientWidth || p.right - p.left,
+            a = s.height || e.clientHeight || p.bottom - p.top,
             f = e.offsetWidth - d,
             h = e.offsetHeight - a;
         if (f || h) {
@@ -125,51 +118,49 @@
             m = t(o),
             h = parseFloat(m.borderTopWidth, 10),
             c = parseFloat(m.borderLeftWidth, 10);
-        i && s && (a.top = ee(a.top, 0), a.left = ee(a.left, 0));
+        i && 'HTML' === o.nodeName && (a.top = $(a.top, 0), a.left = $(a.left, 0));
         var b = g({ top: d.top - a.top - h, left: d.left - a.left - c, width: d.width, height: d.height });
         if (b.marginTop = 0, b.marginLeft = 0, !p && s) {
-            var w = parseFloat(m.marginTop, 10),
-                y = parseFloat(m.marginLeft, 10);
-            b.top -= h - w, b.bottom -= h - w, b.left -= c - y, b.right -= c - y, b.marginTop = w, b.marginLeft = y
+            var y = parseFloat(m.marginTop, 10),
+                w = parseFloat(m.marginLeft, 10);
+            b.top -= h - y, b.bottom -= h - y, b.left -= c - w, b.right -= c - w, b.marginTop = y, b.marginLeft = w
         }
         return (p && !i ? o.contains(l) : o === l && 'BODY' !== l.nodeName) && (b = f(b, o)), b
     }
 
-    function w(e) {
+    function y(e) {
         var t = 1 < arguments.length && void 0 !== arguments[1] && arguments[1],
             o = e.ownerDocument.documentElement,
             n = b(e, o),
-            i = ee(o.clientWidth, window.innerWidth || 0),
-            r = ee(o.clientHeight, window.innerHeight || 0),
+            i = $(o.clientWidth, window.innerWidth || 0),
+            r = $(o.clientHeight, window.innerHeight || 0),
             p = t ? 0 : l(o),
             s = t ? 0 : l(o, 'left'),
             d = { top: p - n.top + n.marginTop, left: s - n.left + n.marginLeft, width: i, height: r };
         return g(d)
     }
 
-    function y(e) { var n = e.nodeName; if ('BODY' === n || 'HTML' === n) return !1; if ('fixed' === t(e, 'position')) return !0; var i = o(e); return !!i && y(i) }
+    function w(e) { var n = e.nodeName; return 'BODY' === n || 'HTML' === n ? !1 : 'fixed' === t(e, 'position') || w(o(e)) }
 
     function E(e) { if (!e || !e.parentElement || r()) return document.documentElement; for (var o = e.parentElement; o && 'none' === t(o, 'transform');) o = o.parentElement; return o || document.documentElement }
 
-    function v(e, t, r, p) {
-        var s = 4 < arguments.length && void 0 !== arguments[4] && arguments[4],
-            d = { top: 0, left: 0 },
-            l = s ? E(e) : a(e, i(t));
-        if ('viewport' === p) d = w(l, s);
+    function v(e, t, i, r) {
+        var p = 4 < arguments.length && void 0 !== arguments[4] && arguments[4],
+            s = { top: 0, left: 0 },
+            d = p ? E(e) : a(e, t);
+        if ('viewport' === r) s = y(d, p);
         else {
-            var f;
-            'scrollParent' === p ? (f = n(o(t)), 'BODY' === f.nodeName && (f = e.ownerDocument.documentElement)) : 'window' === p ? f = e.ownerDocument.documentElement : f = p;
-            var m = b(f, l, s);
-            if ('HTML' === f.nodeName && !y(l)) {
-                var h = c(e.ownerDocument),
-                    g = h.height,
-                    u = h.width;
-                d.top += m.top - m.marginTop, d.bottom = g + m.top, d.left += m.left - m.marginLeft, d.right = u + m.left
-            } else d = m
+            var l;
+            'scrollParent' === r ? (l = n(o(t)), 'BODY' === l.nodeName && (l = e.ownerDocument.documentElement)) : 'window' === r ? l = e.ownerDocument.documentElement : l = r;
+            var f = b(l, d, p);
+            if ('HTML' === l.nodeName && !w(d)) {
+                var m = c(),
+                    h = m.height,
+                    g = m.width;
+                s.top += f.top - f.marginTop, s.bottom = h + f.top, s.left += f.left - f.marginLeft, s.right = g + f.left
+            } else s = f
         }
-        r = r || 0;
-        var v = 'number' == typeof r;
-        return d.left += v ? r : r.left || 0, d.top += v ? r : r.top || 0, d.right -= v ? r : r.right || 0, d.bottom -= v ? r : r.bottom || 0, d
+        return s.left += i, s.top += i, s.right -= i, s.bottom -= i, s
     }
 
     function x(e) {
@@ -196,17 +187,16 @@
 
     function L(e, t, o) {
         var n = 3 < arguments.length && void 0 !== arguments[3] ? arguments[3] : null,
-            r = n ? E(t) : a(t, i(o));
-        return b(o, r, n)
+            i = n ? E(t) : a(t, o);
+        return b(o, i, n)
     }
 
     function S(e) {
-        var t = e.ownerDocument.defaultView,
-            o = t.getComputedStyle(e),
-            n = parseFloat(o.marginTop || 0) + parseFloat(o.marginBottom || 0),
-            i = parseFloat(o.marginLeft || 0) + parseFloat(o.marginRight || 0),
-            r = { width: e.offsetWidth + i, height: e.offsetHeight + n };
-        return r
+        var t = getComputedStyle(e),
+            o = parseFloat(t.marginTop) + parseFloat(t.marginBottom),
+            n = parseFloat(t.marginLeft) + parseFloat(t.marginRight),
+            i = { width: e.offsetWidth + n, height: e.offsetHeight + o };
+        return i
     }
 
     function T(e) { var t = { left: 'right', right: 'left', bottom: 'top', top: 'bottom' }; return e.replace(/left|right|bottom|top/g, function(e) { return t[e] }) }
@@ -270,9 +260,9 @@
         p.addEventListener(t, o, { passive: !0 }), r || M(n(p.parentNode), t, o, i), i.push(p)
     }
 
-    function F(e, t, o, i) { o.updateBound = i, A(e).addEventListener('resize', o.updateBound, { passive: !0 }); var r = n(e); return M(r, 'scroll', o.updateBound, o.scrollParents), o.scrollElement = r, o.eventsEnabled = !0, o }
+    function I(e, t, o, i) { o.updateBound = i, A(e).addEventListener('resize', o.updateBound, { passive: !0 }); var r = n(e); return M(r, 'scroll', o.updateBound, o.scrollParents), o.scrollElement = r, o.eventsEnabled = !0, o }
 
-    function I() { this.state.eventsEnabled || (this.state = F(this.reference, this.options, this.state, this.scheduleUpdate)) }
+    function F() { this.state.eventsEnabled || (this.state = I(this.reference, this.options, this.state, this.scheduleUpdate)) }
 
     function R(e, t) { return A(e).removeEventListener('resize', t.updateBound), t.scrollParents.forEach(function(e) { e.removeEventListener('scroll', t.updateBound) }), t.updateBound = null, t.scrollParents = [], t.scrollElement = null, t.eventsEnabled = !1, t }
 
@@ -280,26 +270,11 @@
 
     function Y(e) { return '' !== e && !isNaN(parseFloat(e)) && isFinite(e) }
 
-    function V(e, t) { Object.keys(t).forEach(function(o) { var n = ''; - 1 !== ['width', 'height', 'top', 'right', 'bottom', 'left'].indexOf(o) && Y(t[o]) && (n = 'px'), e.style[o] = t[o] + n }) }
+    function j(e, t) { Object.keys(t).forEach(function(o) { var n = ''; - 1 !== ['width', 'height', 'top', 'right', 'bottom', 'left'].indexOf(o) && Y(t[o]) && (n = 'px'), e.style[o] = t[o] + n }) }
 
-    function j(e, t) { Object.keys(t).forEach(function(o) { var n = t[o];!1 === n ? e.removeAttribute(o) : e.setAttribute(o, t[o]) }) }
+    function K(e, t) { Object.keys(t).forEach(function(o) { var n = t[o];!1 === n ? e.removeAttribute(o) : e.setAttribute(o, t[o]) }) }
 
-    function q(e, t) {
-        var o = e.offsets,
-            n = o.popper,
-            i = o.reference,
-            r = $,
-            p = function(e) { return e },
-            s = r(i.width),
-            d = r(n.width),
-            a = -1 !== ['left', 'right'].indexOf(e.placement),
-            l = -1 !== e.placement.indexOf('-'),
-            f = t ? a || l || s % 2 == d % 2 ? r : Z : p,
-            m = t ? r : p;
-        return { left: f(1 == s % 2 && 1 == d % 2 && !l && t ? n.left - 1 : n.left), top: m(n.top), bottom: m(n.bottom), right: f(n.right) }
-    }
-
-    function K(e, t, o) {
+    function q(e, t, o) {
         var n = D(e, function(e) { var o = e.name; return o === t }),
             i = !!n && e.some(function(e) { return e.name === o && e.enabled && e.order < n.order });
         if (!i) {
@@ -309,16 +284,16 @@
         return i
     }
 
-    function z(e) { return 'end' === e ? 'start' : 'start' === e ? 'end' : e }
+    function G(e) { return 'end' === e ? 'start' : 'start' === e ? 'end' : e }
 
-    function G(e) {
+    function z(e) {
         var t = 1 < arguments.length && void 0 !== arguments[1] && arguments[1],
-            o = he.indexOf(e),
-            n = he.slice(o + 1).concat(he.slice(0, o));
+            o = me.indexOf(e),
+            n = me.slice(o + 1).concat(me.slice(0, o));
         return t ? n.reverse() : n
     }
 
-    function _(e, t, o, n) {
+    function V(e, t, o, n) {
         var i = e.match(/((?:\-|\+)?\d*\.?\d*)(.*)/),
             r = +i[1],
             p = i[2];
@@ -337,11 +312,11 @@
             var d = g(s);
             return d[t] / 100 * r
         }
-        if ('vh' === p || 'vw' === p) { var a; return a = 'vh' === p ? ee(document.documentElement.clientHeight, window.innerHeight || 0) : ee(document.documentElement.clientWidth, window.innerWidth || 0), a / 100 * r }
+        if ('vh' === p || 'vw' === p) { var a; return a = 'vh' === p ? $(document.documentElement.clientHeight, window.innerHeight || 0) : $(document.documentElement.clientWidth, window.innerWidth || 0), a / 100 * r }
         return r
     }
 
-    function X(e, t, o, n) {
+    function _(e, t, o, n) {
         var i = [0, 0],
             r = -1 !== ['right', 'left'].indexOf(n),
             p = e.split(/(\+|\-)/).map(function(e) { return e.trim() }),
@@ -352,33 +327,25 @@
         return a = a.map(function(e, n) {
             var i = (1 === n ? !r : r) ? 'height' : 'width',
                 p = !1;
-            return e.reduce(function(e, t) { return '' === e[e.length - 1] && -1 !== ['+', '-'].indexOf(t) ? (e[e.length - 1] = t, p = !0, e) : p ? (e[e.length - 1] += t, p = !1, e) : e.concat(t) }, []).map(function(e) { return _(e, i, t, o) })
+            return e.reduce(function(e, t) { return '' === e[e.length - 1] && -1 !== ['+', '-'].indexOf(t) ? (e[e.length - 1] = t, p = !0, e) : p ? (e[e.length - 1] += t, p = !1, e) : e.concat(t) }, []).map(function(e) { return V(e, i, t, o) })
         }), a.forEach(function(e, t) { e.forEach(function(o, n) { Y(o) && (i[t] += o * ('-' === e[n - 1] ? -1 : 1)) }) }), i
     }
 
-    function J(e, t) {
+    function X(e, t) {
         var o, n = t.offset,
             i = e.placement,
             r = e.offsets,
             p = r.popper,
             s = r.reference,
             d = i.split('-')[0];
-        return o = Y(+n) ? [+n, 0] : X(n, p, s, d), 'left' === d ? (p.top += o[0], p.left -= o[1]) : 'right' === d ? (p.top += o[0], p.left += o[1]) : 'top' === d ? (p.left += o[0], p.top -= o[1]) : 'bottom' === d && (p.left += o[0], p.top += o[1]), e.popper = p, e
+        return o = Y(+n) ? [+n, 0] : _(n, p, s, d), 'left' === d ? (p.top += o[0], p.left -= o[1]) : 'right' === d ? (p.top += o[0], p.left += o[1]) : 'top' === d ? (p.left += o[0], p.top -= o[1]) : 'bottom' === d && (p.left += o[0], p.top += o[1]), e.popper = p, e
     }
-    var Q = Math.min,
-        Z = Math.floor,
-        $ = Math.round,
-        ee = Math.max,
-        te = 'undefined' != typeof window && 'undefined' != typeof document && 'undefined' != typeof navigator,
-        oe = function() {
-            for (var e = ['Edge', 'Trident', 'Firefox'], t = 0; t < e.length; t += 1)
-                if (te && 0 <= navigator.userAgent.indexOf(e[t])) return 1;
-            return 0
-        }(),
-        ne = te && window.Promise,
-        ie = ne ? function(e) { var t = !1; return function() { t || (t = !0, window.Promise.resolve().then(function() { t = !1, e() })) } } : function(e) { var t = !1; return function() { t || (t = !0, setTimeout(function() { t = !1, e() }, oe)) } },
-        re = te && !!(window.MSInputMethodContext && document.documentMode),
-        pe = te && /MSIE 10/.test(navigator.userAgent),
+    for (var J = Math.min, Q = Math.round, Z = Math.floor, $ = Math.max, ee = 'undefined' != typeof window && 'undefined' != typeof document, te = ['Edge', 'Trident', 'Firefox'], oe = 0, ne = 0; ne < te.length; ne += 1)
+        if (ee && 0 <= navigator.userAgent.indexOf(te[ne])) { oe = 1; break }
+    var i = ee && window.Promise,
+        ie = i ? function(e) { var t = !1; return function() { t || (t = !0, window.Promise.resolve().then(function() { t = !1, e() })) } } : function(e) { var t = !1; return function() { t || (t = !0, setTimeout(function() { t = !1, e() }, oe)) } },
+        re = ee && !!(window.MSInputMethodContext && document.documentMode),
+        pe = ee && /MSIE 10/.test(navigator.userAgent),
         se = function(e, t) { if (!(e instanceof t)) throw new TypeError('Cannot call a class as a function') },
         de = function() {
             function e(e, t) { for (var o, n = 0; n < t.length; n++) o = t[n], o.enumerable = o.enumerable || !1, o.configurable = !0, 'value' in o && (o.writable = !0), Object.defineProperty(e, o.key, o) }
@@ -390,11 +357,10 @@
                 for (var n in t = arguments[o], t) Object.prototype.hasOwnProperty.call(t, n) && (e[n] = t[n]);
             return e
         },
-        fe = te && /Firefox/i.test(navigator.userAgent),
-        me = ['auto-start', 'auto', 'auto-end', 'top-start', 'top', 'top-end', 'right-start', 'right', 'right-end', 'bottom-end', 'bottom', 'bottom-start', 'left-end', 'left', 'left-start'],
-        he = me.slice(3),
-        ce = { FLIP: 'flip', CLOCKWISE: 'clockwise', COUNTERCLOCKWISE: 'counterclockwise' },
-        ge = function() {
+        fe = ['auto-start', 'auto', 'auto-end', 'top-start', 'top', 'top-end', 'right-start', 'right', 'right-end', 'bottom-end', 'bottom', 'bottom-start', 'left-end', 'left', 'left-start'],
+        me = fe.slice(3),
+        he = { FLIP: 'flip', CLOCKWISE: 'clockwise', COUNTERCLOCKWISE: 'counterclockwise' },
+        ce = function() {
             function t(o, n) {
                 var i = this,
                     r = 2 < arguments.length && void 0 !== arguments[2] ? arguments[2] : {};
@@ -402,9 +368,9 @@
                 var p = this.options.eventsEnabled;
                 p && this.enableEventListeners(), this.state.eventsEnabled = p
             }
-            return de(t, [{ key: 'update', value: function() { return k.call(this) } }, { key: 'destroy', value: function() { return H.call(this) } }, { key: 'enableEventListeners', value: function() { return I.call(this) } }, { key: 'disableEventListeners', value: function() { return U.call(this) } }]), t
+            return de(t, [{ key: 'update', value: function() { return k.call(this) } }, { key: 'destroy', value: function() { return H.call(this) } }, { key: 'enableEventListeners', value: function() { return F.call(this) } }, { key: 'disableEventListeners', value: function() { return U.call(this) } }]), t
         }();
-    return ge.Utils = ('undefined' == typeof window ? global : window).PopperUtils, ge.placements = me, ge.Defaults = {
+    return ce.Utils = ('undefined' == typeof window ? global : window).PopperUtils, ce.placements = fe, ce.Defaults = {
         placement: 'bottom',
         positionFixed: !1,
         eventsEnabled: !0,
@@ -432,7 +398,7 @@
                     return e
                 }
             },
-            offset: { order: 200, enabled: !0, fn: J, offset: 0 },
+            offset: { order: 200, enabled: !0, fn: X, offset: 0 },
             preventOverflow: {
                 order: 300,
                 enabled: !0,
@@ -450,11 +416,11 @@
                     var l = t.priority,
                         f = e.offsets.popper,
                         m = {
-                            primary: function(e) { var o = f[e]; return f[e] < a[e] && !t.escapeWithReference && (o = ee(f[e], a[e])), ae({}, e, o) },
+                            primary: function(e) { var o = f[e]; return f[e] < a[e] && !t.escapeWithReference && (o = $(f[e], a[e])), ae({}, e, o) },
                             secondary: function(e) {
                                 var o = 'right' === e ? 'left' : 'top',
                                     n = f[o];
-                                return f[e] > a[e] && !t.escapeWithReference && (n = Q(f[o], a[e] - ('right' === e ? f.width : f.height))), ae({}, o, n)
+                                return f[e] > a[e] && !t.escapeWithReference && (n = J(f[o], a[e] - ('right' === e ? f.width : f.height))), ae({}, o, n)
                             }
                         };
                     return l.forEach(function(e) {
@@ -487,7 +453,7 @@
                 enabled: !0,
                 fn: function(e, o) {
                     var n;
-                    if (!K(e.instance.modifiers, 'arrow', 'keepTogether')) return e;
+                    if (!q(e.instance.modifiers, 'arrow', 'keepTogether')) return e;
                     var i = o.element;
                     if ('string' == typeof i) { if (i = e.instance.popper.querySelector(i), !i) return e; } else if (!e.instance.popper.contains(i)) return console.warn('WARNING: `arrow.element` must be child of its popper element!'), e;
                     var r = e.placement.split('-')[0],
@@ -503,11 +469,11 @@
                         u = S(i)[l];
                     d[c] - u < s[m] && (e.offsets.popper[m] -= s[m] - (d[c] - u)), d[m] + u > s[c] && (e.offsets.popper[m] += d[m] + u - s[c]), e.offsets.popper = g(e.offsets.popper);
                     var b = d[m] + d[l] / 2 - u / 2,
-                        w = t(e.instance.popper),
-                        y = parseFloat(w['margin' + f], 10),
-                        E = parseFloat(w['border' + f + 'Width'], 10),
-                        v = b - e.offsets.popper[m] - y - E;
-                    return v = ee(Q(s[l] - u, v), 0), e.arrowElement = i, e.offsets.arrow = (n = {}, ae(n, m, $(v)), ae(n, h, ''), n), e
+                        y = t(e.instance.popper),
+                        w = parseFloat(y['margin' + f], 10),
+                        E = parseFloat(y['border' + f + 'Width'], 10),
+                        v = b - e.offsets.popper[m] - w - E;
+                    return v = $(J(s[l] - u, v), 0), e.arrowElement = i, e.offsets.arrow = (n = {}, ae(n, m, Q(v)), ae(n, h, ''), n), e
                 },
                 element: '[x-arrow]'
             },
@@ -523,14 +489,14 @@
                         r = e.placement.split('-')[1] || '',
                         p = [];
                     switch (t.behavior) {
-                        case ce.FLIP:
+                        case he.FLIP:
                             p = [n, i];
                             break;
-                        case ce.CLOCKWISE:
-                            p = G(n);
+                        case he.CLOCKWISE:
+                            p = z(n);
                             break;
-                        case ce.COUNTERCLOCKWISE:
-                            p = G(n, !0);
+                        case he.COUNTERCLOCKWISE:
+                            p = z(n, !0);
                             break;
                         default:
                             p = t.behavior;
@@ -547,18 +513,14 @@
                             g = f(a.top) < f(o.top),
                             u = f(a.bottom) > f(o.bottom),
                             b = 'left' === n && h || 'right' === n && c || 'top' === n && g || 'bottom' === n && u,
-                            w = -1 !== ['top', 'bottom'].indexOf(n),
-                            y = !!t.flipVariations && (w && 'start' === r && h || w && 'end' === r && c || !w && 'start' === r && g || !w && 'end' === r && u),
-                            E = !!t.flipVariationsByContent && (w && 'start' === r && c || w && 'end' === r && h || !w && 'start' === r && u || !w && 'end' === r && g),
-                            v = y || E;
-                        (m || b || v) && (e.flipped = !0, (m || b) && (n = p[d + 1]), v && (r = z(r)), e.placement = n + (r ? '-' + r : ''), e.offsets.popper = le({}, e.offsets.popper, C(e.instance.popper, e.offsets.reference, e.placement)), e = P(e.instance.modifiers, e, 'flip'))
+                            y = -1 !== ['top', 'bottom'].indexOf(n),
+                            w = !!t.flipVariations && (y && 'start' === r && h || y && 'end' === r && c || !y && 'start' === r && g || !y && 'end' === r && u);
+                        (m || b || w) && (e.flipped = !0, (m || b) && (n = p[d + 1]), w && (r = G(r)), e.placement = n + (r ? '-' + r : ''), e.offsets.popper = le({}, e.offsets.popper, C(e.instance.popper, e.offsets.reference, e.placement)), e = P(e.instance.modifiers, e, 'flip'))
                     }), e
                 },
                 behavior: 'flip',
                 padding: 5,
-                boundariesElement: 'viewport',
-                flipVariations: !1,
-                flipVariationsByContent: !1
+                boundariesElement: 'viewport'
             },
             inner: {
                 order: 700,
@@ -578,7 +540,7 @@
                 order: 800,
                 enabled: !0,
                 fn: function(e) {
-                    if (!K(e.instance.modifiers, 'hide', 'preventOverflow')) return e;
+                    if (!q(e.instance.modifiers, 'hide', 'preventOverflow')) return e;
                     var t = e.offsets.reference,
                         o = D(e.instance.modifiers, function(e) { return 'preventOverflow' === e.name }).boundaries;
                     if (t.bottom < o.top || t.left > o.right || t.top > o.bottom || t.right < o.left) {
@@ -604,15 +566,15 @@
                         l = p(e.instance.popper),
                         f = u(l),
                         m = { position: i.position },
-                        h = q(e, 2 > window.devicePixelRatio || !fe),
+                        h = { left: Z(i.left), top: Q(i.top), bottom: Q(i.bottom), right: Z(i.right) },
                         c = 'bottom' === o ? 'top' : 'bottom',
                         g = 'right' === n ? 'left' : 'right',
                         b = B('transform');
-                    if (d = 'bottom' == c ? 'HTML' === l.nodeName ? -l.clientHeight + h.bottom : -f.height + h.bottom : h.top, s = 'right' == g ? 'HTML' === l.nodeName ? -l.clientWidth + h.right : -f.width + h.right : h.left, a && b) m[b] = 'translate3d(' + s + 'px, ' + d + 'px, 0)', m[c] = 0, m[g] = 0, m.willChange = 'transform';
+                    if (d = 'bottom' == c ? -f.height + h.bottom : h.top, s = 'right' == g ? -f.width + h.right : h.left, a && b) m[b] = 'translate3d(' + s + 'px, ' + d + 'px, 0)', m[c] = 0, m[g] = 0, m.willChange = 'transform';
                     else {
-                        var w = 'bottom' == c ? -1 : 1,
-                            y = 'right' == g ? -1 : 1;
-                        m[c] = d * w, m[g] = s * y, m.willChange = c + ', ' + g
+                        var y = 'bottom' == c ? -1 : 1,
+                            w = 'right' == g ? -1 : 1;
+                        m[c] = d * y, m[g] = s * w, m.willChange = c + ', ' + g
                     }
                     var E = { "x-placement": e.placement };
                     return e.attributes = le({}, E, e.attributes), e.styles = le({}, m, e.styles), e.arrowStyles = le({}, e.offsets.arrow, e.arrowStyles), e
@@ -624,15 +586,15 @@
             applyStyle: {
                 order: 900,
                 enabled: !0,
-                fn: function(e) { return V(e.instance.popper, e.styles), j(e.instance.popper, e.attributes), e.arrowElement && Object.keys(e.arrowStyles).length && V(e.arrowElement, e.arrowStyles), e },
+                fn: function(e) { return j(e.instance.popper, e.styles), K(e.instance.popper, e.attributes), e.arrowElement && Object.keys(e.arrowStyles).length && j(e.arrowElement, e.arrowStyles), e },
                 onLoad: function(e, t, o, n, i) {
                     var r = L(i, t, e, o.positionFixed),
                         p = O(o.placement, r, t, e, o.modifiers.flip.boundariesElement, o.modifiers.flip.padding);
-                    return t.setAttribute('x-placement', p), V(t, { position: o.positionFixed ? 'fixed' : 'absolute' }), o
+                    return t.setAttribute('x-placement', p), j(t, { position: o.positionFixed ? 'fixed' : 'absolute' }), o
                 },
                 gpuAcceleration: void 0
             }
         }
-    }, ge
+    }, ce
 });
 //# sourceMappingURL=popper.min.js.map

@@ -19,24 +19,16 @@ FROM  ".$wpdb->prefix."lens where 1" );
 $coatings = $wpdb->get_results ( "
 SELECT * 
 FROM  ".$wpdb->prefix."coatings where 1" );
-if(isset($_POST['submitButton'])){ 
-  
-  $initial_propertPrice_json = $_POST['epc_property_string'];
-  $tableName =$wpdb->prefix.'epf_properties';
-  $wpdb->update( $tableName, array( 
-  "data" => $initial_propertPrice_json),
-   array( 'id' => 100 ), array( '%s'), array( '%d' ) );
+
+$initial_propertPrice_json = $wpdb->get_results ( "
+SELECT * 
+FROM  ".$wpdb->prefix."epf_properties where 1" );
+$initial_propertPrice_json = $initial_propertPrice_json[0]->data;
+
+$words_epf_dugudlabs_lng = $words_epf_dugudlabs[get_locale()];
+if($words_epf_dugudlabs_lng == null){
+    $words_epf_dugudlabs_lng = $words_epf_dugudlabs["en_US"];
 }
-else{
-    $initial_propertPrice_json = $wpdb->get_results ( "
-    SELECT * 
-    FROM  ".$wpdb->prefix."epf_properties where 1" );
-    $initial_propertPrice_json = $initial_propertPrice_json[0]->data;
-}
-    $words_epf_dugudlabs_lng = $words_epf_dugudlabs[get_locale()];
-    if($words_epf_dugudlabs_lng == null){
-        $words_epf_dugudlabs_lng = $words_epf_dugudlabs["en_US"];
-    }
 //var_dump($epc_price);
 ?>
 <style>
@@ -76,28 +68,7 @@ else{
 
     var initial_propertPrice_json = '<?php echo $initial_propertPrice_json;?>';
     var initial_propertPrice_obj = JSON.parse(initial_propertPrice_json);
-    function show_save_btn(btn_id) {
-        jQuery('#' + btn_id).addClass("save-btn-show");
-        jQuery('#' + btn_id).removeClass("save-btn-hide");
-    }
-    function show_price(side, property){
-        let prop_value = jQuery('#' + side + '-' + property + '-SELECT' + ' option:selected').text();
-        jQuery('#' + side + '-' + property + '-PRICE').val(initial_propertPrice_obj[side][property][prop_value]['price']);
-    }
-
-function save_value(side, property) {
-    jQuery('#' + side + '-' + property).addClass("save-btn-hide");
-    jQuery('#' + side + '-' + property).removeClass("save-btn-show");
-    let prop_value = jQuery('#' + side + '-' + property + '-SELECT' + ' option:selected').text();
-    let new_price = jQuery('#' + side + '-' + property + '-PRICE').val();
-    console.log(prop_value + '-' + new_price);
-    initial_propertPrice_obj[side][property][prop_value]['price'] = new_price;
-    console.log(initial_propertPrice_obj);
-    jQuery('#epc_property_string').val(JSON.stringify(initial_propertPrice_obj));
-}
-
-
-        </script>
+     </script>
 <form class="form-inline" action="" method="post">
     <div class="container">
         <div class="accordion" id="accordionExample">
@@ -159,7 +130,7 @@ function save_value(side, property) {
                                             ?>
                                                 <div class="col-sm-2" style="border: green; border-style: dashed;padding-left: 0px;padding-right: 0px;">
                                                 <div id="new_GlassType disableInput" class="card lens-type">
-                                                        <div class="image_add disableInput"  style="text-align: center;background: #2196f370;cursor: pointer;"><?php echo $words_epf_dugudlabs_lng["Add Image"];?>
+                                                        <div class="image_add disableInput disableInput"  style="text-align: center;background: #2196f370;cursor: pointer;"><?php echo $words_epf_dugudlabs_lng["Add Image"];?>
                                                         <input disabled value="" style="display: none;" type=text id="GlassType_new_image_img" name="GlassType_new_image">
                                                         </div>
                                                         <div class="card-body">
@@ -208,7 +179,7 @@ function save_value(side, property) {
                                             ?>
                                                 <div class="col-sm-2" style="border: green; border-style: dashed;padding-left: 0px;padding-right: 0px;">
                                                     <div id="new_GlassType disableInput" class="card lens-type">
-                                                            <div class="image_add disableInput" style="text-align: center;background: #2196f370;cursor: pointer;"><?php echo $words_epf_dugudlabs_lng["Add Image"];?>
+                                                            <div class="image_add disableInput disableInput" style="text-align: center;background: #2196f370;cursor: pointer;"><?php echo $words_epf_dugudlabs_lng["Add Image"];?>
                                                             <input disabled value="" style="display: none;" type=text id="GlassType_new_image_img" name="GlassType_new_image">
                                                             </div>
                                                             <div class="card-body">
@@ -279,7 +250,7 @@ function save_value(side, property) {
                                             echo $selectText;
                                             ?>
                                             <input disabled id="RIGHT-SPH-PRICE" type="number" oninput="show_save_btn('RIGHT-SPH');" class="form-control epf-price-box-table disableInput">
-                                            <span onclick="save_value('RIGHT','SPH');" id="RIGHT-SPH" class="btn btn-primary  save-price-button" style="display: none;">Save</span>
+                                            <span id="RIGHT-SPH" class="btn btn-primary  save-price-button" style="display: none;">Save</span>
                                         </div>
                                     </td>
                                     <td>
@@ -302,7 +273,7 @@ function save_value(side, property) {
                                             echo $selectText;
                                             ?>
                                             <input disabled id="RIGHT-CYL-PRICE" oninput="show_save_btn('RIGHT-CYL');" type="number" class="form-control epf-price-box-table disableInput">
-                                            <span onclick="save_value('RIGHT','CYL');" id="RIGHT-CYL" class="btn btn-primary  save-price-button" style="display: none;">Save</span>
+                                            <span id="RIGHT-CYL" class="btn btn-primary  save-price-button" style="display: none;">Save</span>
                                         </div>
                                     </td>
                                     <td>
@@ -326,7 +297,7 @@ function save_value(side, property) {
                                             echo $selectText;
                                             ?>
                                             <input disabled id="RIGHT-AXIS-PRICE" oninput="show_save_btn('RIGHT-AXIS');" type="number" class="form-control epf-price-box-table disableInput">
-                                            <span onclick="save_value('RIGHT','AXIS');" id="RIGHT-AXIS" class="btn btn-primary  save-price-button" style="display: none;">Save</span>
+                                            <span id="RIGHT-AXIS" class="btn btn-primary  save-price-button" style="display: none;">Save</span>
                                         </div>
                                     </td>
                                     <td>
@@ -350,7 +321,7 @@ function save_value(side, property) {
                                             echo $selectText;
                                             ?>
                                             <input disabled id="RIGHT-ADD-PRICE" oninput="show_save_btn('RIGHT-ADD');" type="number" class="form-control epf-price-box-table disableInput">
-                                            <span onclick="save_value('RIGHT','ADD');" id="RIGHT-ADD" class="btn btn-primary  save-price-button" style="display: none;">Save</span>
+                                            <span id="RIGHT-ADD" class="btn btn-primary  save-price-button" style="display: none;">Save</span>
                                         </div>
                                     </td>
                                     
@@ -377,7 +348,7 @@ function save_value(side, property) {
                                             echo $selectText;
                                             ?>
                                             <input disabled id="LEFT-SPH-PRICE"  oninput="show_save_btn('LEFT-SPH');"  type="number" class="form-control epf-price-box-table disableInput">
-                                            <span onclick="save_value('LEFT','SPH');" id="LEFT-SPH" class="btn btn-primary  save-price-button" style="display: none;">Save</span>
+                                            <span id="LEFT-SPH" class="btn btn-primary  save-price-button" style="display: none;">Save</span>
                                         </div>
 
                                     </td>
@@ -401,7 +372,7 @@ function save_value(side, property) {
                                             echo $selectText;
                                             ?>
                                             <input disabled id="LEFT-CYL-PRICE"  oninput="show_save_btn('LEFT-CYL');" type="number" class="form-control epf-price-box-table disableInput">
-                                            <span onclick="save_value('LEFT','CYL');" id="LEFT-CYL" class="btn btn-primary  save-price-button" style="display: none;">Save</span>
+                                            <span id="LEFT-CYL" class="btn btn-primary  save-price-button" style="display: none;">Save</span>
                                         </div>
 
                                     </td>
@@ -425,7 +396,7 @@ function save_value(side, property) {
                                             echo $selectText;
                                             ?>
                                             <input disabled id="LEFT-AXIS-PRICE"  oninput="show_save_btn('LEFT-AXIS');" type="number" class="form-control epf-price-box-table disableInput">
-                                            <span onclick="save_value('LEFT','AXIS');" id="LEFT-AXIS" class="btn btn-primary  save-price-button" style="display: none;">Save</span>
+                                            <span id="LEFT-AXIS" class="btn btn-primary  save-price-button" style="display: none;">Save</span>
                                         </div>
 
                                     </td>
@@ -449,7 +420,7 @@ function save_value(side, property) {
                                             echo $selectText;
                                             ?>
                                             <input disabled id="LEFT-ADD-PRICE"  oninput="show_save_btn('LEFT-ADD');" type="number" class="form-control epf-price-box-table disableInput">
-                                            <span onclick="save_value('LEFT','ADD');" id="LEFT-ADD" class="btn btn-primary  save-price-button" style="display: none;">Save</span>
+                                            <span id="LEFT-ADD" class="btn btn-primary  save-price-button" style="display: none;">Save</span>
                                         </div>
 
                                     </td>
@@ -473,7 +444,7 @@ function save_value(side, property) {
                                             echo $selectText;
                                             ?>
                                             <input disabled id="LEFT-PD-PRICE" oninput="show_save_btn('LEFT-PD');" type="number" class="form-control epf-price-box-table disableInput">
-                                            <span onclick="save_value('LEFT','PD');" id="LEFT-PD" class="btn btn-primary  save-price-button" style="display: none;">Save</span>
+                                            <span id="LEFT-PD" class="btn btn-primary  save-price-button" style="display: none;">Save</span>
                                         </div>
 
                                     </td>
@@ -509,7 +480,7 @@ function save_value(side, property) {
                                     ?>
                                         <div class="col-sm-2">
                                             <div id="<?php echo $lens->id; ?>" class="card lens-type">
-                                                <div class="image_change disableInput" id="LensType_<?php echo $lens->id; ?>_image_change disableInput" onclick="change_image('LensType_<?php echo $lens->id; ?>_image');" style="text-align: center;background: #2196f370;cursor: pointer;"><?php echo $words_epf_dugudlabs_lng["Change Image"];?>
+                                                <div class="image_change disableInput" id="LensType_<?php echo $lens->id; ?>_image_change disableInput" style="text-align: center;background: #2196f370;cursor: pointer;"><?php echo $words_epf_dugudlabs_lng["Change Image"];?>
                                                 <input disabled value="<?php echo $lens->image;?>" style="display: none;" type=text id="LensType_<?php echo $lens->id; ?>_image_img" name="LensType_<?php echo $lens->id; ?>_image"></div>
                                                 <div class="card-body">
                                                 <h6 class="card-title"><input disabled value="<?php echo $lens->name; ?>" style="width: 100% !important;" id="LensType_<?php echo $lens->id; ?>_name" type="text" class="form-control disableInput epf-price-box disableInput" placeholder="Lens Name"/></h6>
@@ -524,8 +495,8 @@ function save_value(side, property) {
                                                         <input disabled class="form-check-input" <?php echo $lens->disabled=="true"?"checked":"";?> name="LensType_<?php echo $lens->id; ?>_disabled" id="LensType_<?php echo $lens->id; ?>_disabled" type="checkbox"> <?php echo $words_epf_dugudlabs_lng["disable"];?>
                                                     </label>
                                                 </div>
-                                                <div style="display: none;" id="LensType_<?php echo $lens->id; ?>_save_btn" onclick="saveLensType(<?php echo $lens->id; ?>);" class="image_change disableInput" onclick="editLensType(<?php echo $lens->id; ?>);" style="text-align: center;background: #2196f370;cursor: pointer;">Save</div>
-                                                <div id="LensType_<?php echo $lens->id; ?>_edit_btn" class="image_change disableInput" onclick="editLensType(<?php echo $lens->id; ?>);" style="text-align: center;background: #2196f370;cursor: pointer;">Edit</div>
+                                                <div style="display: none;" id="LensType_<?php echo $lens->id; ?>_save_btn" style="text-align: center;background: #2196f370;cursor: pointer;">Save</div>
+                                                <div id="LensType_<?php echo $lens->id; ?>_edit_btn" class="image_change disableInput" style="text-align: center;background: #2196f370;cursor: pointer;">Edit</div>
                                             
                                             </div>
                                         </div>
@@ -542,7 +513,7 @@ function save_value(side, property) {
                                             ?>
                                                 <div class="col-sm-2" style="background: #ad0e0e87;border: green; border-style: dashed;padding-left: 0px;padding-right: 0px;">
                                                 <div id="new_LensType disableInput" class="card lens-type">
-                                                        <div class="image_add disableInput" onclick="change_image('LensType_new_image');" style="text-align: center;background: #2196f370;cursor: pointer;"><?php echo $words_epf_dugudlabs_lng["Add Image"];?>
+                                                        <div class="image_add disableInput disableInput" style="text-align: center;background: #2196f370;cursor: pointer;"><?php echo $words_epf_dugudlabs_lng["Add Image"];?>
                                                         <input disabled value="" style="display: none;" type=text id="LensType_new_image_img" name="LensType_new_image">
                                                         </div>
                                                         <div class="card-body">
@@ -554,7 +525,7 @@ function save_value(side, property) {
                                                             <label class="epf-price-label" for="LensType_new_price"><?php echo $words_epf_dugudlabs_lng["Price"];?>:</label>
                                                             <input disabled type="number"  value="0" class=" disableInput form-control disableInput epf-price-box" id="LensType_new_price" name="LensType_new_price">
                                                         </div>
-                                                        <div class="image_change disableInput" onclick="addNewLensType();" style="text-align: center;background: #2196f370;cursor: pointer;">Add New</div>
+                                                        <div class="image_change disableInput" style="text-align: center;background: #2196f370;cursor: pointer;">Add New</div>
                                                 </div>
                                             </div>
                                             <?php
@@ -567,7 +538,7 @@ function save_value(side, property) {
                                     ?>
                                     <div class="col-sm-2">
                                         <div id="<?php echo $lens->id; ?>" class="card lens-type">
-                                            <div class="image_change disableInput" id="LensType_<?php echo $lens->id; ?>_image_change disableInput" onclick="change_image('LensType_<?php echo $lens->id; ?>_image');" style="text-align: center;background: #2196f370;cursor: pointer;"><?php echo $words_epf_dugudlabs_lng["Change Image"];?>
+                                            <div class="image_change disableInput" id="LensType_<?php echo $lens->id; ?>_image_change disableInput" style="text-align: center;background: #2196f370;cursor: pointer;"><?php echo $words_epf_dugudlabs_lng["Change Image"];?>
                                             <input disabled value="<?php echo $lens->image;?>" style="display: none;" type=text id="LensType_<?php echo $lens->id; ?>_image_img" name="LensType_<?php echo $lens->id; ?>_image"></div>
                                             <div class="card-body">
                                             <h6 class="card-title"><input disabled value="<?php echo $lens->name; ?>" style="width: 100% !important;" id="LensType_<?php echo $lens->id; ?>_name" type="text" class="form-control disableInput epf-price-box disableInput" placeholder="Lens Name"/></h6>
@@ -582,8 +553,8 @@ function save_value(side, property) {
                                                     <input disabled class="form-check-input" <?php echo $lens->disabled=="true"?"checked":"";?>  value="disabled" name="LensType_<?php echo $lens->id; ?>_disabled" id="LensType_<?php echo $lens->id; ?>_disabled" type="checkbox"> <?php echo $words_epf_dugudlabs_lng["disable"];?>
                                                 </label>
                                             </div>
-                                            <div style="display: none;" id="LensType_<?php echo $lens->id; ?>_save_btn" onclick="saveLensType(<?php echo $lens->id; ?>);" class="image_change disableInput" onclick="editLensType(<?php echo $lens->id; ?>);" style="text-align: center;background: #2196f370;cursor: pointer;">Save</div>
-                                            <div id="LensType_<?php echo $lens->id; ?>_edit_btn" class="image_change disableInput" onclick="editLensType(<?php echo $lens->id; ?>);" style="text-align: center;background: #2196f370;cursor: pointer;">Edit</div>
+                                            <div style="display: none;" id="LensType_<?php echo $lens->id; ?>_save_btn" style="text-align: center;background: #2196f370;cursor: pointer;">Save</div>
+                                            <div id="LensType_<?php echo $lens->id; ?>_edit_btn" class="image_change disableInput" style="text-align: center;background: #2196f370;cursor: pointer;">Edit</div>
                                         </div>
                                     </div>
                                     <?php 
@@ -591,7 +562,7 @@ function save_value(side, property) {
                                             ?>
                                                 <div class="col-sm-2" style="border: green; border-style: dashed;padding-left: 0px;padding-right: 0px;">
                                                 <div id="new_LensType disableInput" class="card lens-type">
-                                                        <div class="image_add" onclick="change_image('LensType_new_image');" style="text-align: center;background: #2196f370;cursor: pointer;"><?php echo $words_epf_dugudlabs_lng["Add Image"];?>
+                                                        <div class="image_add disableInput" style="text-align: center;background: #2196f370;cursor: pointer;"><?php echo $words_epf_dugudlabs_lng["Add Image"];?>
                                                         <input disabled value="" style="display: none;" type=text id="LensType_new_image_img" name="LensType_new_image">
                                                         </div>
                                                         <div class="card-body">
@@ -603,7 +574,7 @@ function save_value(side, property) {
                                                             <label class="epf-price-label" for="LensType_new_price"><?php echo $words_epf_dugudlabs_lng["Price"];?>:</label>
                                                             <input disabled type="number"  value="0" class="form-control disableInput epf-price-box" id="LensType_new_price" name="LensType_new_price">
                                                         </div>
-                                                        <div class="image_change disableInput" onclick="addNewLensType();" style="text-align: center;background: #2196f370;cursor: pointer;">Add New</div>
+                                                        <div class="image_change disableInput" style="text-align: center;background: #2196f370;cursor: pointer;">Add New</div>
                                                 </div>
                                             </div>
                                             <?php
@@ -643,7 +614,7 @@ function save_value(side, property) {
                                         ?>
                             <div class="col-sm-2">
                                 <div id="<?php echo $coating->id; ?>" class="card coating-type">
-                                    <div class="image_change disableInput" id="CoatingType_<?php echo $coating->id; ?>_image_change disableInput" onclick="change_image('CoatingType_<?php echo $coating->id; ?>_image');" style="text-align: center;background: #2196f370;cursor: pointer;"><?php echo $words_epf_dugudlabs_lng["Change Image"];?>
+                                    <div class="image_change disableInput" id="CoatingType_<?php echo $coating->id; ?>_image_change disableInput" style="text-align: center;background: #2196f370;cursor: pointer;"><?php echo $words_epf_dugudlabs_lng["Change Image"];?>
                                     <input disabled value="<?php echo $coating->image;?>" style="display: none;" type=text id="CoatingType_<?php echo $coating->id; ?>_image_img" name="CoatingType_<?php echo $coating->id; ?>_image"></div>
                                     <div class="card-body">
                                     <h6 class="card-title"><input disabled value="<?php echo $coating->name; ?>" style="width: 100% !important;" id="CoatingType_<?php echo $coating->id; ?>_name" type="text" class="form-control disableInput epf-price-box disableInput" placeholder="Coating Name"/></h6>
@@ -658,8 +629,8 @@ function save_value(side, property) {
                                             <input disabled class="form-check-input" <?php echo $coating->disabled=="true"?"checked":"";?> name="CoatingType_<?php echo $coating->id; ?>_disabled" id="CoatingType_<?php echo $coating->id; ?>_disabled" type="checkbox"> <?php echo $words_epf_dugudlabs_lng["disable"];?>
                                         </label>
                                     </div>
-                                    <div style="display: none;" id="CoatingType_<?php echo $coating->id; ?>_save_btn" onclick="saveCoatingType(<?php echo $coating->id; ?>);" class="image_change disableInput" onclick="editCoatingType(<?php echo $coating->id; ?>);" style="text-align: center;background: #2196f370;cursor: pointer;">Save</div>
-                                    <div id="CoatingType_<?php echo $coating->id; ?>_edit_btn" class="image_change disableInput" onclick="editCoatingType(<?php echo $coating->id; ?>);" style="text-align: center;background: #2196f370;cursor: pointer;">Edit</div>
+                                    <div style="display: none;" id="CoatingType_<?php echo $coating->id; ?>_save_btn" style="text-align: center;background: #2196f370;cursor: pointer;">Save</div>
+                                    <div id="CoatingType_<?php echo $coating->id; ?>_edit_btn" class="image_change disableInput" style="text-align: center;background: #2196f370;cursor: pointer;">Edit</div>
                                 
                                 </div>
                             </div>      
@@ -674,7 +645,7 @@ function save_value(side, property) {
                                                 ?>
                             <div class="col-sm-2" style="border: green; border-style: dashed;padding-left: 0px;padding-right: 0px;">
                                 <div id="new_CoatingType disableInput" class="card coating-type">
-                                    <div class="image_add" onclick="change_image('CoatingType_new_image');" style="text-align: center;background: #2196f370;cursor: pointer;"><?php echo $words_epf_dugudlabs_lng["Add Image"];?>
+                                    <div class="image_add disableInput disableInput" style="text-align: center;background: #2196f370;cursor: pointer;"><?php echo $words_epf_dugudlabs_lng["Add Image"];?>
                                     <input disabled value="" style="display: none;" type=text id="CoatingType_new_image_img" name="CoatingType_new_image">
                                     </div>
                                     <div class="card-body">
@@ -686,7 +657,7 @@ function save_value(side, property) {
                                         <label class="epf-price-label" for="CoatingType_new_price"><?php echo $words_epf_dugudlabs_lng["Price"];?>:</label>
                                         <input disabled type="number"  value="0" class="form-control disableInput epf-price-box" id="CoatingType_new_price" name="CoatingType_new_price">
                                     </div>
-                                    <div class="image_change disableInput" onclick="addNewCoatingType();" style="text-align: center;background: #2196f370;cursor: pointer;">Add New</div>
+                                    <div class="image_change disableInput" style="text-align: center;background: #2196f370;cursor: pointer;">Add New</div>
                                 </div>
                             </div>
                                                 <?php
@@ -699,7 +670,7 @@ function save_value(side, property) {
                                         ?>
                                         <div class="col-sm-2">
                                             <div id="<?php echo $coating->id; ?>" class="card coating-type">
-                                                <div class="image_change disableInput" id="CoatingType_<?php echo $coating->id; ?>_image_change disableInput" onclick="change_image('CoatingType_<?php echo $coating->id; ?>_image');" style="text-align: center;background: #2196f370;cursor: pointer;"><?php echo $words_epf_dugudlabs_lng["Change Image"];?>
+                                                <div class="image_change disableInput" id="CoatingType_<?php echo $coating->id; ?>_image_change disableInput" style="text-align: center;background: #2196f370;cursor: pointer;"><?php echo $words_epf_dugudlabs_lng["Change Image"];?>
                                                 <input disabled value="<?php echo $coating->image;?>" style="display: none;" type=text id="CoatingType_<?php echo $coating->id; ?>_image_img" name="CoatingType_<?php echo $coating->id; ?>_image"></div>
                                                 <div class="card-body">
                                                 <h6 class="card-title"><input disabled value="<?php echo $coating->name; ?>" style="width: 100% !important;" id="CoatingType_<?php echo $coating->id; ?>_name" type="text" class="form-control disableInput epf-price-box disableInput" placeholder="Coating Name"/></h6>
@@ -714,8 +685,8 @@ function save_value(side, property) {
                                                         <input disabled class="form-check-input" <?php echo $coating->disabled=="true"?"checked":"";?>  value="disabled" name="CoatingType_<?php echo $coating->id; ?>_disabled" id="CoatingType_<?php echo $coating->id; ?>_disabled" type="checkbox"> <?php echo $words_epf_dugudlabs_lng["disable"];?>
                                                     </label>
                                                 </div>
-                                                <div style="display: none;" id="CoatingType_<?php echo $coating->id; ?>_save_btn" onclick="saveCoatingType(<?php echo $coating->id; ?>);" class="image_change disableInput" onclick="editCoatingType(<?php echo $coating->id; ?>);" style="text-align: center;background: #2196f370;cursor: pointer;">Save</div>
-                                                <div id="CoatingType_<?php echo $coating->id; ?>_edit_btn" class="image_change disableInput" onclick="editCoatingType(<?php echo $coating->id; ?>);" style="text-align: center;background: #2196f370;cursor: pointer;">Edit</div>
+                                                <div style="display: none;" id="CoatingType_<?php echo $coating->id; ?>_save_btn" style="text-align: center;background: #2196f370;cursor: pointer;">Save</div>
+                                                <div id="CoatingType_<?php echo $coating->id; ?>_edit_btn" class="image_change disableInput" style="text-align: center;background: #2196f370;cursor: pointer;">Edit</div>
                                             </div>
                                         </div>
                                         <?php 
@@ -723,7 +694,7 @@ function save_value(side, property) {
                                                 ?>
                                                     <div class="col-sm-2" style="border: green; border-style: dashed;padding-left: 0px;padding-right: 0px;">
                                                     <div id="new_CoatingType disableInput" class="card coating-type">
-                                                            <div class="image_add" onclick="change_image('CoatingType_new_image');" style="text-align: center;background: #2196f370;cursor: pointer;"><?php echo $words_epf_dugudlabs_lng["Add Image"];?>
+                                                            <div class="image_add disableInput" style="text-align: center;background: #2196f370;cursor: pointer;"><?php echo $words_epf_dugudlabs_lng["Add Image"];?>
                                                             <input disabled value="" style="display: none;" type=text id="CoatingType_new_image_img" name="CoatingType_new_image">
                                                             </div>
                                                             <div class="card-body">
@@ -735,7 +706,7 @@ function save_value(side, property) {
                                                                 <label class="epf-price-label" for="CoatingType_new_price"><?php echo $words_epf_dugudlabs_lng["Price"];?>:</label>
                                                                 <input disabled type="number"  value="0" class="form-control disableInput epf-price-box" id="CoatingType_new_price" name="CoatingType_new_price">
                                                             </div>
-                                                            <div class="image_change disableInput" onclick="addNewCoatingType();" style="text-align: center;background: #2196f370;cursor: pointer;">Add New</div>
+                                                            <div class="image_change disableInput" style="text-align: center;background: #2196f370;cursor: pointer;">Add New</div>
                                                     </div>
                                                 </div>
                                                 <?php
@@ -752,5 +723,4 @@ function save_value(side, property) {
             </div>
         </div>
     </div>
-    <button name="submitButton" type="submit" class="submitButton btn btn-primary"><?php echo $words_epf_dugudlabs_lng["Save"];?></button>
 </form>
