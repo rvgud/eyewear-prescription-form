@@ -3,6 +3,7 @@ Contributors: dugudlabs
 Donate link: https://www.dugudlabs.com/specfit/eyewear-prescription-form
 Tags: comments, spam
 Requires at least: 3.0.1
+Requires PHP: 5.0
 Tested up to: 3.4
 Stable tag: 4.3
 License: GPLv2 or later
@@ -51,3 +52,12 @@ Our Development team’s main focus was to make this plugin more easy to use and
 4. Frontend Page: Lens Types
 5. Frontend Page: Lens Types
 6. Frontend Page: Lens Types
+
+== Changelog ==
+
+= 1.0 =
+* First Change
+
+
+== Upgrade Notice ==
+NA
