@@ -145,6 +145,8 @@ function epc_specfit_show_prescription_button(){
 
 function epc_specfit_wdm_add_item_data($cart_item_data, $product_id, $variation_id)
 {
+
+	$request_item = sanitize_text_field($_REQUEST[$item]);
 	global $wpdb;
 	include plugin_dir_path(__FILE__).'../languages/eyewear_prescription_form_lang.php';
 	$epc_items = array("prescription_type","RIGHT-PD","LEFT-PD","SINGLE-PD","MEASURED-PD");
@@ -155,35 +157,35 @@ function epc_specfit_wdm_add_item_data($cart_item_data, $product_id, $variation_
 		$words_epf_dugudlabs_lng = $words_epf_dugudlabs["en_US"];
 	}
 	foreach($custom_items as $item){
-		if(isset($_REQUEST[$item]) && $_REQUEST[$item] !='' )
+		if(isset($request_item) && $request_item !='' )
 		{
 			$tableName= $wpdb->prefix."glasses";
 			if($item == "LensType")
 				$tableName= $wpdb->prefix."lens";
 			else if($item == "LensCoating")
 				$tableName= $wpdb->prefix."coatings";
-			$data = $wpdb->get_row("SELECT name,price FROM $tableName WHERE id = $_REQUEST[$item]");
+			$data = $wpdb->get_row("SELECT name,price FROM $tableName WHERE id = $request_item");
 			$data = json_encode($data);
 			if($data != NULL)
 				$cart_item_data[$item] = sanitize_text_field($data);
 		}
 	}
 	foreach($epc_items as $item){
-		if(isset($_REQUEST[$item]) && $_REQUEST[$item] != $words_epf_dugudlabs_lng["select"] )
+		if(isset($request_item) && $request_item != $words_epf_dugudlabs_lng["select"] )
 		{
-			$cart_item_data[$item] = sanitize_text_field($_REQUEST[$item]);
+			$cart_item_data[$item] = sanitize_text_field($request_item);
 
 			
 		}
 	}
 	foreach($prescription_items as $item){
-		if(isset($_REQUEST[$item]) && $_REQUEST[$item] != $words_epf_dugudlabs_lng["select"] )
+		if(isset($request_item) && $request_item != $words_epf_dugudlabs_lng["select"] )
 		{
 			$initial_propertPriceString = get_option( 'epc_property_string');
 			$initial_propertPriceString = str_replace("\\","",$initial_propertPriceString);
 			$initial_propertPrice=json_decode($initial_propertPriceString,true);
 			$itemArray = explode("-",$item);
-			$str='{"'.$_REQUEST[$item].'":{"price":"'.$initial_propertPrice[$itemArray[0]][$itemArray[1]][$_REQUEST[$item]]['price'].'"}}';
+			$str='{"'.$request_item.'":{"price":"'.$initial_propertPrice[$itemArray[0]][$itemArray[1]][$request_item]['price'].'"}}';
 			$cart_item_data[$item] = sanitize_text_field($str);
 		}
 	}
@@ -192,7 +194,8 @@ function epc_specfit_wdm_add_item_data($cart_item_data, $product_id, $variation_
 
 ;
 	if($_FILES){
-		$uploaded_file = wp_handle_upload( $_FILES['prescription_file'], array( 'test_form' => false ) );
+		$prescriptin_file = sanitize_file_name($_FILES['prescription_file']);
+		$uploaded_file = wp_handle_upload( $prescriptin_file, array( 'test_form' => false ) );
 
 		if( $uploaded_file && ! isset( $uploaded_file['error'] ) ) {
 			$response['response'] = "SUCCESS";
